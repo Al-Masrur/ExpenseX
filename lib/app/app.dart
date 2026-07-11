@@ -5,6 +5,7 @@ import 'package:expensex/app/router.dart';
 import 'package:expensex/core/theme/app_theme.dart';
 import 'package:expensex/features/expenses/providers/expense_provider.dart';
 import 'package:expensex/features/income/providers/income_provider.dart';
+import 'package:expensex/features/budget/providers/budget_provider.dart';
 
 class ExpenseXApp extends StatelessWidget {
   const ExpenseXApp({super.key});
@@ -13,13 +14,16 @@ class ExpenseXApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => ExpenseProvider()..loadExpenses(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => IncomeProvider()..loadIncomes(),
-        ),
-      ],
+  ChangeNotifierProvider(
+    create: (_) => ExpenseProvider()..loadExpenses(),
+  ),
+  ChangeNotifierProvider(
+    create: (_) => IncomeProvider()..loadIncomes(),
+  ),
+  ChangeNotifierProvider(
+    create: (_) => BudgetProvider()..loadBudgets(),
+  ),
+],
       child: MaterialApp(
         title: 'ExpenseX',
         debugShowCheckedModeBanner: false,
