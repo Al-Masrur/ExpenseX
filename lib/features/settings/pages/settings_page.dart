@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('ExpenseX')),
-      body: const Center(
+    return const Scaffold(
+      body: Center(
         child: Text(
-          'Welcome to ExpenseX',
+          'Settings\nComing Soon',
+          textAlign: TextAlign.center,
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
