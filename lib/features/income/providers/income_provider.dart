@@ -17,6 +17,8 @@ class IncomeProvider extends ChangeNotifier {
   double get totalIncome =>
       _incomes.fold(0.0, (sum, item) => sum + item.amount);
 
+      int get incomeCount => _incomes.length;
+
   Future<void> loadIncomes() async {
     _incomes
       ..clear()

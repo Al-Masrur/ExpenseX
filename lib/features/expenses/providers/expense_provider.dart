@@ -15,6 +15,8 @@ class ExpenseProvider extends ChangeNotifier {
 
   double get totalExpense =>
       _expenses.fold(0.0, (sum, item) => sum + item.amount);
+      
+      int get expenseCount => _expenses.length;
 
   Future<void> loadExpenses() async {
     _expenses
