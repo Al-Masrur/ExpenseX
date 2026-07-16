@@ -83,11 +83,9 @@ class _IncomePageState extends State<IncomePage> {
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Income deleted'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Income deleted')));
   }
 
   @override
@@ -97,18 +95,14 @@ class _IncomePageState extends State<IncomePage> {
     final incomes = _filteredIncomes(provider.incomes);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Income'),
-      ),
+      appBar: AppBar(title: const Text('Income')),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final incomeProvider = context.read<IncomeProvider>();
 
           await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => const AddIncomePage(),
-            ),
+            MaterialPageRoute(builder: (_) => const AddIncomePage()),
           );
 
           if (!mounted) return;
@@ -151,7 +145,7 @@ class _IncomePageState extends State<IncomePage> {
           ),
 
           Expanded(
-                        child: RefreshIndicator(
+            child: RefreshIndicator(
               onRefresh: provider.loadIncomes,
               child: incomes.isEmpty
                   ? ListView(
@@ -173,18 +167,13 @@ class _IncomePageState extends State<IncomePage> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        Center(
-                          child: Text(
-                            'Tap + to add your first income.',
-                          ),
-                        ),
+                        Center(child: Text('Tap + to add your first income.')),
                       ],
                     )
                   : ListView.separated(
                       padding: const EdgeInsets.all(16),
                       itemCount: incomes.length,
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(height: 12),
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final income = incomes[index];
 
@@ -211,15 +200,13 @@ class _IncomePageState extends State<IncomePage> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(24),
                             onTap: () async {
-                              final incomeProvider =
-                                  context.read<IncomeProvider>();
+                              final incomeProvider = context
+                                  .read<IncomeProvider>();
 
                               await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => AddIncomePage(
-                                    income: income,
-                                  ),
+                                  builder: (_) => AddIncomePage(income: income),
                                 ),
                               );
 
@@ -231,17 +218,13 @@ class _IncomePageState extends State<IncomePage> {
                               child: ListTile(
                                 contentPadding: EdgeInsets.zero,
                                 leading: CircleAvatar(
-                                  child: Icon(
-                                    categoryIcon(income.category),
-                                  ),
+                                  child: Icon(categoryIcon(income.category)),
                                 ),
                                 title: Text(income.title),
                                 subtitle: Text(income.category),
                                 trailing: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
                                       currency(income.amount),
@@ -252,9 +235,9 @@ class _IncomePageState extends State<IncomePage> {
                                     ),
                                     Text(
                                       '${income.date.day}/${income.date.month}/${income.date.year}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall,
                                     ),
                                   ],
                                 ),

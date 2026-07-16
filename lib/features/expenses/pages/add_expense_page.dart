@@ -5,10 +5,7 @@ import 'package:expensex/data/models/expense.dart';
 import 'package:expensex/features/expenses/providers/expense_provider.dart';
 
 class AddExpensePage extends StatefulWidget {
-  const AddExpensePage({
-    super.key,
-    this.expense,
-  });
+  const AddExpensePage({super.key, this.expense});
 
   final Expense? expense;
 
@@ -43,23 +40,21 @@ class _AddExpensePageState extends State<AddExpensePage> {
     'Others',
   ];
 
+  @override
+  void initState() {
+    super.initState();
 
-@override
-void initState() {
-  super.initState();
+    final expense = widget.expense;
 
-  final expense = widget.expense;
+    if (expense == null) return;
 
-  if (expense == null) return;
+    _titleController.text = expense.title;
+    _amountController.text = expense.amount.toString();
+    _noteController.text = expense.note ?? '';
 
-  _titleController.text = expense.title;
-  _amountController.text = expense.amount.toString();
-  _noteController.text = expense.note ?? '';
-
-  _selectedCategory = expense.category;
-  _selectedDate = expense.date;
-}
-
+    _selectedCategory = expense.category;
+    _selectedDate = expense.date;
+  }
 
   @override
   void dispose() {
@@ -92,40 +87,36 @@ void initState() {
     });
 
     final expense = Expense(
-  id: widget.expense?.id,
-  title: _titleController.text.trim(),
-  amount: double.parse(_amountController.text),
-  category: _selectedCategory,
-  date: _selectedDate,
-  note: _noteController.text.trim(),
-);
+      id: widget.expense?.id,
+      title: _titleController.text.trim(),
+      amount: double.parse(_amountController.text),
+      category: _selectedCategory,
+      date: _selectedDate,
+      note: _noteController.text.trim(),
+    );
 
-final provider = context.read<ExpenseProvider>();
+    final provider = context.read<ExpenseProvider>();
 
-if (widget.isEditing) {
-  await provider.updateExpense(expense);
-} else {
-  await provider.addExpense(expense);
-}
+    if (widget.isEditing) {
+      await provider.updateExpense(expense);
+    } else {
+      await provider.addExpense(expense);
+    }
 
     if (!mounted) return;
 
     Navigator.pop(context);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Expense Added Successfully'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Expense Added Successfully')));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-  widget.isEditing ? 'Edit Expense' : 'Add Expense',
-),
+        title: Text(widget.isEditing ? 'Edit Expense' : 'Add Expense'),
       ),
       body: Form(
         key: _formKey,
@@ -150,8 +141,9 @@ if (widget.isEditing) {
 
             TextFormField(
               controller: _amountController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Amount',
                 prefixText: '৳ ',
@@ -181,12 +173,7 @@ if (widget.isEditing) {
                 border: OutlineInputBorder(),
               ),
               items: _categories
-                  .map(
-                    (e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(e),
-                    ),
-                  )
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                   .toList(),
               onChanged: (value) {
                 setState(() {
@@ -226,8 +213,7 @@ if (widget.isEditing) {
             FilledButton.icon(
               onPressed: _saving ? null : _save,
               icon: const Icon(Icons.save),
-              label: Text(widget.isEditing ? 'Update Expense' : 'Save Expense',
-              ),
+              label: Text(widget.isEditing ? 'Update Expense' : 'Save Expense'),
             ),
           ],
         ),

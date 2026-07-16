@@ -14,16 +14,13 @@ class SummaryCard extends StatelessWidget {
   final IconData icon;
   final Color color;
 
-  String get formattedAmount =>
-      '৳ ${amount.toStringAsFixed(2)}';
+  String get formattedAmount => '৳ ${amount.toStringAsFixed(2)}';
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(18),
         child: Column(
@@ -31,27 +28,18 @@ class SummaryCard extends StatelessWidget {
           children: [
             CircleAvatar(
               backgroundColor: color.withValues(alpha: 0.15),
-              child: Icon(
-                icon,
-                color: color,
-              ),
+              child: Icon(icon, color: color),
             ),
 
             const SizedBox(height: 18),
 
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
 
             const SizedBox(height: 8),
 
             Text(
               formattedAmount,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ],
         ),

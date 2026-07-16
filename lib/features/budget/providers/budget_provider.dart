@@ -4,9 +4,8 @@ import 'package:expensex/data/models/budget.dart';
 import 'package:expensex/data/repositories/budget_repository.dart';
 
 class BudgetProvider extends ChangeNotifier {
-  BudgetProvider({
-    BudgetRepository? repository,
-  }) : _repository = repository ?? BudgetRepository();
+  BudgetProvider({BudgetRepository? repository})
+    : _repository = repository ?? BudgetRepository();
 
   final BudgetRepository _repository;
 
@@ -19,17 +18,14 @@ class BudgetProvider extends ChangeNotifier {
 
     try {
       return _budgets.firstWhere(
-        (budget) =>
-            budget.month == now.month &&
-            budget.year == now.year,
+        (budget) => budget.month == now.month && budget.year == now.year,
       );
     } catch (_) {
       return null;
     }
   }
 
-  double get currentBudgetAmount =>
-      currentBudget?.amount ?? 0;
+  double get currentBudgetAmount => currentBudget?.amount ?? 0;
 
   Future<void> loadBudgets() async {
     _budgets
@@ -69,8 +65,7 @@ class BudgetProvider extends ChangeNotifier {
   }
 
   bool isBudgetExceeded(double spent) {
-    return spent > currentBudgetAmount &&
-        currentBudgetAmount > 0;
+    return spent > currentBudgetAmount && currentBudgetAmount > 0;
   }
 
   bool hasBudget() {

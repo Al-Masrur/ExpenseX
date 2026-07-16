@@ -24,19 +24,13 @@ class BudgetPage extends StatelessWidget {
     final exceeded = budgetProvider.isBudgetExceeded(spent);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Monthly Budget'),
-      ),
+      appBar: AppBar(title: const Text('Monthly Budget')),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
           await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => AddBudgetPage(
-                budget: budget,
-              ),
-            ),
+            MaterialPageRoute(builder: (_) => AddBudgetPage(budget: budget)),
           );
 
           if (!context.mounted) return;
@@ -100,9 +94,7 @@ class BudgetPage extends StatelessWidget {
                       trailing: Text(
                         currency(remaining),
                         style: TextStyle(
-                          color: remaining >= 0
-                              ? Colors.green
-                              : Colors.red,
+                          color: remaining >= 0 ? Colors.green : Colors.red,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -120,9 +112,7 @@ class BudgetPage extends StatelessWidget {
 
                     Text(
                       '${(progress * 100).toStringAsFixed(1)}% Used',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
 
                     const SizedBox(height: 20),
@@ -130,21 +120,14 @@ class BudgetPage extends StatelessWidget {
                     Row(
                       children: [
                         Icon(
-                          exceeded
-                              ? Icons.warning
-                              : Icons.check_circle,
-                          color:
-                              exceeded ? Colors.red : Colors.green,
+                          exceeded ? Icons.warning : Icons.check_circle,
+                          color: exceeded ? Colors.red : Colors.green,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          exceeded
-                              ? 'Budget Exceeded'
-                              : 'Within Budget',
+                          exceeded ? 'Budget Exceeded' : 'Within Budget',
                           style: TextStyle(
-                            color: exceeded
-                                ? Colors.red
-                                : Colors.green,
+                            color: exceeded ? Colors.red : Colors.green,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -158,9 +141,7 @@ class BudgetPage extends StatelessWidget {
                         await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => AddBudgetPage(
-                              budget: budget,
-                            ),
+                            builder: (_) => AddBudgetPage(budget: budget),
                           ),
                         );
 

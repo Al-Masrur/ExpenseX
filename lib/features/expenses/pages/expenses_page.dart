@@ -78,11 +78,9 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Expense deleted'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Expense deleted')));
   }
 
   @override
@@ -91,9 +89,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
     final expenses = _filteredExpenses(provider.expenses);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Expenses'),
-      ),
+      appBar: AppBar(title: const Text('Expenses')),
       body: Column(
         children: [
           Padding(
@@ -133,11 +129,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                   ? ListView(
                       children: const [
                         SizedBox(height: 180),
-                        Icon(
-                          Icons.receipt_long,
-                          size: 80,
-                          color: Colors.grey,
-                        ),
+                        Icon(Icons.receipt_long, size: 80, color: Colors.grey),
                         SizedBox(height: 20),
                         Center(
                           child: Text(
@@ -159,8 +151,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                   : ListView.separated(
                       padding: const EdgeInsets.all(16),
                       itemCount: expenses.length,
-                      separatorBuilder: (_, _) =>
-                          const SizedBox(height: 12),
+                      separatorBuilder: (_, _) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final expense = expenses[index];
 
@@ -187,36 +178,31 @@ class _ExpensesPageState extends State<ExpensesPage> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(24),
                             onTap: () async {
-  final provider = context.read<ExpenseProvider>();
+                              final provider = context.read<ExpenseProvider>();
 
-  await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => AddExpensePage(
-        expense: expense,
-      ),
-    ),
-  );
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      AddExpensePage(expense: expense),
+                                ),
+                              );
 
-  if (!mounted) return;
+                              if (!mounted) return;
 
-  await provider.loadExpenses();
-},
+                              await provider.loadExpenses();
+                            },
                             child: AppCard(
                               child: ListTile(
                                 contentPadding: EdgeInsets.zero,
                                 leading: CircleAvatar(
-                                  child: Icon(
-                                    categoryIcon(expense.category),
-                                  ),
+                                  child: Icon(categoryIcon(expense.category)),
                                 ),
                                 title: Text(expense.title),
                                 subtitle: Text(expense.category),
                                 trailing: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
                                       currency(expense.amount),
@@ -227,9 +213,9 @@ class _ExpensesPageState extends State<ExpensesPage> {
                                     ),
                                     Text(
                                       '${expense.date.day}/${expense.date.month}/${expense.date.year}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall,
                                     ),
                                   ],
                                 ),

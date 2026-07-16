@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 
 class BudgetRepository {
   BudgetRepository({AppDatabase? database})
-      : _database = database ?? AppDatabase.instance;
+    : _database = database ?? AppDatabase.instance;
 
   final AppDatabase _database;
 
@@ -21,10 +21,7 @@ class BudgetRepository {
   Future<List<Budget>> getBudgets() async {
     final db = await _database.database;
 
-    final result = await db.query(
-      'budgets',
-      orderBy: 'year DESC, month DESC',
-    );
+    final result = await db.query('budgets', orderBy: 'year DESC, month DESC');
 
     return result.map(Budget.fromMap).toList();
   }
@@ -43,11 +40,7 @@ class BudgetRepository {
   Future<int> deleteBudget(int id) async {
     final db = await _database.database;
 
-    return db.delete(
-      'budgets',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return db.delete('budgets', where: 'id = ?', whereArgs: [id]);
   }
 
   Future<Budget?> getCurrentMonthBudget() async {

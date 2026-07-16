@@ -12,12 +12,7 @@ class Budget {
   final double amount;
 
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'month': month,
-      'year': year,
-      'amount': amount,
-    };
+    return {'id': id, 'month': month, 'year': year, 'amount': amount};
   }
 
   factory Budget.fromMap(Map<String, dynamic> map) {

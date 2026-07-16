@@ -35,11 +35,7 @@ class AppDatabase {
     await _createBudgetsTable(db);
   }
 
-  Future<void> _onUpgrade(
-    Database db,
-    int oldVersion,
-    int newVersion,
-  ) async {
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await _createIncomesTable(db);
     }

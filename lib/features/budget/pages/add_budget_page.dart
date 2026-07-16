@@ -5,10 +5,7 @@ import 'package:expensex/data/models/budget.dart';
 import 'package:expensex/features/budget/providers/budget_provider.dart';
 
 class AddBudgetPage extends StatefulWidget {
-  const AddBudgetPage({
-    super.key,
-    this.budget,
-  });
+  const AddBudgetPage({super.key, this.budget});
 
   final Budget? budget;
 
@@ -81,9 +78,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.isEditing ? 'Edit Budget' : 'Monthly Budget',
-        ),
+        title: Text(widget.isEditing ? 'Edit Budget' : 'Monthly Budget'),
       ),
       body: Form(
         key: _formKey,
@@ -92,18 +87,16 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
           children: [
             Text(
               "Budget for $_month/$_year",
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 25),
 
             TextFormField(
               controller: _amountController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Budget Amount',
                 prefixText: '৳ ',
@@ -127,11 +120,7 @@ class _AddBudgetPageState extends State<AddBudgetPage> {
             FilledButton.icon(
               onPressed: _saving ? null : _save,
               icon: const Icon(Icons.save),
-              label: Text(
-                widget.isEditing
-                    ? 'Update Budget'
-                    : 'Save Budget',
-              ),
+              label: Text(widget.isEditing ? 'Update Budget' : 'Save Budget'),
             ),
           ],
         ),

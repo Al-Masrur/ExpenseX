@@ -25,10 +25,7 @@ class DashboardPage extends StatelessWidget {
     final balance = totalIncome - totalExpense;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ExpenseX'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('ExpenseX'), centerTitle: true),
       body: RefreshIndicator(
         onRefresh: () async {
           await expenseProvider.loadExpenses();
@@ -39,9 +36,9 @@ class DashboardPage extends StatelessWidget {
           children: [
             Text(
               'Good Evening 👋',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 6),
@@ -57,10 +54,7 @@ class DashboardPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Current Balance',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  const Text('Current Balance', style: TextStyle(fontSize: 16)),
 
                   const SizedBox(height: 10),
 
@@ -106,9 +100,7 @@ class DashboardPage extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            const AppSectionTitle(
-              title: 'Quick Actions',
-            ),
+            const AppSectionTitle(title: 'Quick Actions'),
 
             const SizedBox(height: 15),
 
@@ -124,9 +116,7 @@ class DashboardPage extends StatelessWidget {
                   onPressed: () async {
                     await Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => const AddExpensePage(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const AddExpensePage()),
                     );
 
                     if (!context.mounted) return;
@@ -141,9 +131,7 @@ class DashboardPage extends StatelessWidget {
                   onPressed: () async {
                     await Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => const AddIncomePage(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const AddIncomePage()),
                     );
 
                     if (!context.mounted) return;
@@ -172,9 +160,7 @@ class DashboardPage extends StatelessWidget {
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text(
-                          'Statistics module coming soon.',
-                        ),
+                        content: Text('Statistics module coming soon.'),
                       ),
                     );
                   },
@@ -186,9 +172,7 @@ class DashboardPage extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            const AppSectionTitle(
-              title: 'Budget Overview',
-            ),
+            const AppSectionTitle(title: 'Budget Overview'),
 
             const SizedBox(height: 12),
 
@@ -198,79 +182,64 @@ class DashboardPage extends StatelessWidget {
                 children: const [
                   Text(
                     'No budget created yet.',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  LinearProgressIndicator(
-                    value: 0,
-                  ),
+                  LinearProgressIndicator(value: 0),
                 ],
               ),
             ),
 
             const SizedBox(height: 30),
 
-            const AppSectionTitle(
-              title: 'Recent Expenses',
-            ),
+            const AppSectionTitle(title: 'Recent Expenses'),
 
             const SizedBox(height: 12),
 
-            if(expenseProvider.expenses.isEmpty)
+            if (expenseProvider.expenses.isEmpty)
               const AppCard(
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 30),
-                  child: Center(
-                    child: Text(
-                      'No transactions available.',
-                    ),
-                  ),
+                  child: Center(child: Text('No transactions available.')),
                 ),
               )
             else
-              ...expenseProvider.expenses.take(5).map(
-                (expense) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: AppCard(
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.red.withValues(alpha: 0.12),
-                          child: const Icon(
-                            Icons.arrow_downward,
-                            color: Colors.red,
-                          ),
+              ...expenseProvider.expenses.take(5).map((expense) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: AppCard(
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.red.withValues(alpha: 0.12),
+                        child: const Icon(
+                          Icons.arrow_downward,
+                          color: Colors.red,
                         ),
-                        title: Text(expense.title),
-                        subtitle: Text(
-                          '${expense.category} • ${expense.date.day}/${expense.date.month}/${expense.date.year}',
-                        ),
-                        trailing: Text(
-                          currency(expense.amount),
-                          style: const TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      ),
+                      title: Text(expense.title),
+                      subtitle: Text(
+                        '${expense.category} • ${expense.date.day}/${expense.date.month}/${expense.date.year}',
+                      ),
+                      trailing: Text(
+                        currency(expense.amount),
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  );
-                },
-              ),
-           ],
+                  ),
+                );
+              }),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           await Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => const AddExpensePage(),
-            ),
+            MaterialPageRoute(builder: (_) => const AddExpensePage()),
           );
 
           if (!context.mounted) return;

@@ -5,10 +5,7 @@ import 'package:expensex/data/models/income.dart';
 import 'package:expensex/features/income/providers/income_provider.dart';
 
 class AddIncomePage extends StatefulWidget {
-  const AddIncomePage({
-    super.key,
-    this.income,
-  });
+  const AddIncomePage({super.key, this.income});
 
   final Income? income;
 
@@ -124,9 +121,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.isEditing ? 'Edit Income' : 'Add Income',
-        ),
+        title: Text(widget.isEditing ? 'Edit Income' : 'Add Income'),
       ),
       body: Form(
         key: _formKey,
@@ -149,8 +144,9 @@ class _AddIncomePageState extends State<AddIncomePage> {
             const SizedBox(height: 20),
             TextFormField(
               controller: _amountController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Amount',
                 prefixText: '৳ ',
@@ -178,12 +174,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
                 border: OutlineInputBorder(),
               ),
               items: _categories
-                  .map(
-                    (e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(e),
-                    ),
-                  )
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                   .toList(),
               onChanged: (value) {
                 setState(() {
@@ -217,9 +208,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
             FilledButton.icon(
               onPressed: _saving ? null : _save,
               icon: const Icon(Icons.save),
-              label: Text(
-                widget.isEditing ? 'Update Income' : 'Save Income',
-              ),
+              label: Text(widget.isEditing ? 'Update Income' : 'Save Income'),
             ),
           ],
         ),

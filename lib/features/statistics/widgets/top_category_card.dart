@@ -47,20 +47,12 @@ class TopCategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 28,
-              child: Icon(
-                getCategoryIcon(),
-                size: 28,
-              ),
-            ),
+            CircleAvatar(radius: 28, child: Icon(getCategoryIcon(), size: 28)),
 
             const SizedBox(width: 20),
 
@@ -70,9 +62,7 @@ class TopCategoryCard extends StatelessWidget {
                 children: [
                   const Text(
                     'Top Spending Category',
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(color: Colors.grey),
                   ),
 
                   const SizedBox(height: 6),
@@ -89,9 +79,7 @@ class TopCategoryCard extends StatelessWidget {
 
                   Text(
                     currency(amount),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ],
               ),

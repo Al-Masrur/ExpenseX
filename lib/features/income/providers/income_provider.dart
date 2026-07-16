@@ -4,9 +4,8 @@ import 'package:expensex/data/models/income.dart';
 import 'package:expensex/data/repositories/income_repository.dart';
 
 class IncomeProvider extends ChangeNotifier {
-  IncomeProvider({
-    IncomeRepository? repository,
-  }) : _repository = repository ?? IncomeRepository();
+  IncomeProvider({IncomeRepository? repository})
+    : _repository = repository ?? IncomeRepository();
 
   final IncomeRepository _repository;
 
@@ -17,7 +16,7 @@ class IncomeProvider extends ChangeNotifier {
   double get totalIncome =>
       _incomes.fold(0.0, (sum, item) => sum + item.amount);
 
-      int get incomeCount => _incomes.length;
+  int get incomeCount => _incomes.length;
 
   Future<void> loadIncomes() async {
     _incomes

@@ -14,16 +14,12 @@ class ExpenseXApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-  ChangeNotifierProvider(
-    create: (_) => ExpenseProvider()..loadExpenses(),
-  ),
-  ChangeNotifierProvider(
-    create: (_) => IncomeProvider()..loadIncomes(),
-  ),
-  ChangeNotifierProvider(
-    create: (_) => BudgetProvider()..loadBudgets(),
-  ),
-],
+        ChangeNotifierProvider(
+          create: (_) => ExpenseProvider()..loadExpenses(),
+        ),
+        ChangeNotifierProvider(create: (_) => IncomeProvider()..loadIncomes()),
+        ChangeNotifierProvider(create: (_) => BudgetProvider()..loadBudgets()),
+      ],
       child: MaterialApp(
         title: 'ExpenseX',
         debugShowCheckedModeBanner: false,
