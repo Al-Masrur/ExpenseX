@@ -1,3 +1,4 @@
+import 'package:expensex/features/settings/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:expensex/core/theme/theme_provider.dart';
@@ -23,6 +24,10 @@ class ExpenseXApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => IncomeProvider()..loadIncomes()),
 
         ChangeNotifierProvider(create: (_) => BudgetProvider()..loadBudgets()),
+
+        ChangeNotifierProvider(
+          create: (_) => SettingsProvider()..loadSettings(),
+        ),
       ],
 
       child: Consumer<ThemeProvider>(
