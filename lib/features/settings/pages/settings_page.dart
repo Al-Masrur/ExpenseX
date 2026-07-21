@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:expensex/core/services/export_service.dart';
 import 'package:expensex/core/theme/theme_provider.dart';
+
+import 'package:expensex/features/budget/providers/budget_provider.dart';
+import 'package:expensex/features/expenses/providers/expense_provider.dart';
+import 'package:expensex/features/income/providers/income_provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -49,23 +55,19 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
-
                 const RadioListTile<ThemeMode>(
                   title: Text('System Default'),
                   subtitle: Text('Follow your device settings'),
                   value: ThemeMode.system,
                 ),
-
                 const RadioListTile<ThemeMode>(
                   title: Text('Light'),
                   value: ThemeMode.light,
                 ),
-
                 const RadioListTile<ThemeMode>(
                   title: Text('Dark'),
                   value: ThemeMode.dark,
                 ),
-
                 const SizedBox(height: 12),
               ],
             ),
@@ -75,15 +77,60 @@ class _SettingsPageState extends State<SettingsPage> {
     );
 
     if (selectedTheme == null) return;
-
     if (!mounted) return;
 
     context.read<ThemeProvider>().setThemeMode(selectedTheme);
   }
 
+  Future<void> _exportData() async {
+    final messenger = ScaffoldMessenger.of(context);
+
+    try {
+      final exportService = ExportService();
+
+      final expenseProvider = context.read<ExpenseProvider>();
+      final incomeProvider = context.read<IncomeProvider>();
+      final budgetProvider = context.read<BudgetProvider>();
+
+      messenger.showSnackBar(
+        const SnackBar(
+          duration: Duration(seconds: 1),
+          content: Text('Exporting data...'),
+        ),
+      );
+
+      final expenseFile = await exportService.exportExpenses(
+        expenseProvider.expenses,
+      );
+
+      final incomeFile = await exportService.exportIncome(
+        incomeProvider.incomes,
+      );
+
+      final budgetFile = await exportService.exportBudgets(
+        budgetProvider.budgets,
+      );
+
+      await exportService.shareFile(expenseFile);
+      await exportService.shareFile(incomeFile);
+      await exportService.shareFile(budgetFile);
+
+      if (!mounted) return;
+
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Export completed successfully.')),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      messenger.showSnackBar(SnackBar(content: Text('Export failed: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
@@ -148,15 +195,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 ListTile(
                   leading: const Icon(Icons.upload_file),
                   title: const Text('Export Data'),
-                  subtitle: const Text('Export your financial records'),
+                  subtitle: const Text(
+                    'Export Expenses, Income & Budget to CSV',
+                  ),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Data export will be added next.'),
-                      ),
-                    );
-                  },
+                  onTap: _exportData,
                 ),
 
                 const Divider(height: 1),
@@ -164,12 +207,16 @@ class _SettingsPageState extends State<SettingsPage> {
                 ListTile(
                   leading: const Icon(Icons.backup_outlined),
                   title: const Text('Backup Data'),
-                  subtitle: const Text('Create a backup of your data'),
+                  subtitle: const Text(
+                    'Create a backup of your SQLite database',
+                  ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Backup feature will be added later.'),
+                        content: Text(
+                          'Backup feature will be implemented next.',
+                        ),
                       ),
                     );
                   },
@@ -189,16 +236,14 @@ class _SettingsPageState extends State<SettingsPage> {
 
           Card(
             child: Column(
-              children: [
-                const ListTile(
+              children: const [
+                ListTile(
                   leading: Icon(Icons.account_balance_wallet),
                   title: Text('ExpenseX'),
                   subtitle: Text('Personal Finance & Budget Tracker'),
                 ),
-
-                const Divider(height: 1),
-
-                const ListTile(
+                Divider(height: 1),
+                ListTile(
                   leading: Icon(Icons.info_outline),
                   title: Text('Version'),
                   trailing: Text('1.0.0'),

@@ -18,7 +18,7 @@ class AppSectionTitle extends StatelessWidget {
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
-        if (action != null) action!,
+        ?action,
       ],
     );
   }

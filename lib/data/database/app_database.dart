@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -9,12 +11,15 @@ class AppDatabase {
   static Database? _database;
 
   Future<Database> get database async {
-    if (_database != null) {
-      return _database!;
-    }
-
-    _database = await _initializeDatabase();
+    _database ??= await _initializeDatabase();
     return _database!;
+  }
+
+  Future<File> get databaseFile async {
+    final databasePath = await getDatabasesPath();
+    final path = join(databasePath, 'expensex.db');
+
+    return File(path);
   }
 
   Future<Database> _initializeDatabase() async {
@@ -27,6 +32,17 @@ class AppDatabase {
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
+  }
+
+  Future<void> closeDatabase() async {
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
+    }
+  }
+
+  Future<void> reopenDatabase() async {
+    _database = await _initializeDatabase();
   }
 
   Future<void> _onCreate(Database db, int version) async {

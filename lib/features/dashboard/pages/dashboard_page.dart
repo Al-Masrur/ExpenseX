@@ -12,6 +12,9 @@ import 'package:expensex/shared/widgets/app_card.dart';
 import 'package:expensex/shared/widgets/app_section_title.dart';
 import 'package:expensex/shared/widgets/app_stat_card.dart';
 
+import 'package:expensex/core/services/budget_alert_service.dart';
+import 'package:expensex/shared/widgets/budget_alert_card.dart';
+
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
@@ -37,6 +40,13 @@ class DashboardPage extends StatelessWidget {
         : 0.0;
 
     final budgetExceeded = budgetAmount > 0 && spent > budgetAmount;
+
+    const budgetAlertService = BudgetAlertService();
+
+    final budgetAlert = budgetAlertService.evaluate(
+      budget: budgetAmount,
+      spent: spent,
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('ExpenseX'), centerTitle: true),
@@ -116,6 +126,10 @@ class DashboardPage extends StatelessWidget {
                 ),
               ],
             ),
+
+            const SizedBox(height: 24),
+
+            BudgetAlertCard(alert: budgetAlert),
 
             const SizedBox(height: 30),
 
