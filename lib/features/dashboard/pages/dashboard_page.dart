@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:expensex/features/budget/pages/add_budget_page.dart';
+import 'package:expensex/features/budget/providers/budget_provider.dart';
 import 'package:expensex/features/expenses/pages/add_expense_page.dart';
 import 'package:expensex/features/expenses/providers/expense_provider.dart';
 import 'package:expensex/features/income/pages/add_income_page.dart';
@@ -19,10 +21,22 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final expenseProvider = context.watch<ExpenseProvider>();
     final incomeProvider = context.watch<IncomeProvider>();
+    final budgetProvider = context.watch<BudgetProvider>();
 
     final totalIncome = incomeProvider.totalIncome;
     final totalExpense = expenseProvider.totalExpense;
     final balance = totalIncome - totalExpense;
+
+    final currentBudget = budgetProvider.currentBudget;
+    final budgetAmount = budgetProvider.currentBudgetAmount;
+    final spent = totalExpense;
+    final remaining = budgetAmount - spent;
+
+    final budgetProgress = budgetAmount > 0
+        ? (spent / budgetAmount).clamp(0.0, 1.0)
+        : 0.0;
+
+    final budgetExceeded = budgetAmount > 0 && spent > budgetAmount;
 
     return Scaffold(
       appBar: AppBar(title: const Text('ExpenseX'), centerTitle: true),
@@ -30,6 +44,7 @@ class DashboardPage extends StatelessWidget {
         onRefresh: () async {
           await expenseProvider.loadExpenses();
           await incomeProvider.loadIncomes();
+          await budgetProvider.loadBudgets();
         },
         child: ListView(
           padding: const EdgeInsets.all(20),
@@ -80,20 +95,24 @@ class DashboardPage extends StatelessWidget {
 
             Row(
               children: [
-                AppStatCard(
-                  title: 'Income',
-                  amount: currency(totalIncome),
-                  icon: Icons.trending_up,
-                  color: Colors.green,
+                Expanded(
+                  child: AppStatCard(
+                    title: 'Income',
+                    amount: currency(totalIncome),
+                    icon: Icons.trending_up,
+                    color: Colors.green,
+                  ),
                 ),
 
                 const SizedBox(width: 16),
 
-                AppStatCard(
-                  title: 'Expense',
-                  amount: currency(totalExpense),
-                  icon: Icons.trending_down,
-                  color: Colors.red,
+                Expanded(
+                  child: AppStatCard(
+                    title: 'Expense',
+                    amount: currency(totalExpense),
+                    icon: Icons.trending_down,
+                    color: Colors.red,
+                  ),
                 ),
               ],
             ),
@@ -143,14 +162,17 @@ class DashboardPage extends StatelessWidget {
                 ),
 
                 FilledButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Budget module coming in the next milestone.',
-                        ),
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AddBudgetPage(budget: currentBudget),
                       ),
                     );
+
+                    if (!context.mounted) return;
+
+                    await budgetProvider.loadBudgets();
                   },
                   icon: const Icon(Icons.account_balance_wallet_outlined),
                   label: const Text('Budget'),
@@ -160,7 +182,9 @@ class DashboardPage extends StatelessWidget {
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Statistics module coming soon.'),
+                        content: Text(
+                          'Open the Statistics tab to view your analytics.',
+                        ),
                       ),
                     );
                   },
@@ -177,17 +201,80 @@ class DashboardPage extends StatelessWidget {
             const SizedBox(height: 12),
 
             AppCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'No budget created yet.',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  LinearProgressIndicator(value: 0),
-                ],
-              ),
+              child: currentBudget == null
+                  ? const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'No budget created yet.',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          'Tap the Budget button above to create your monthly budget.',
+                        ),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Monthly Budget',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              currency(budgetAmount),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Spent: ${currency(spent)}'),
+                            Text(
+                              budgetExceeded
+                                  ? 'Over Budget'
+                                  : 'Remaining: ${currency(remaining)}',
+                              style: TextStyle(
+                                color: budgetExceeded
+                                    ? Colors.red
+                                    : Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        LinearProgressIndicator(
+                          value: budgetProgress,
+                          minHeight: 10,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        Text(
+                          '${(budgetProgress * 100).toStringAsFixed(0)}% of budget used',
+                        ),
+                      ],
+                    ),
             ),
 
             const SizedBox(height: 30),

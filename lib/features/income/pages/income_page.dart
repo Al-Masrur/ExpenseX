@@ -173,7 +173,7 @@ class _IncomePageState extends State<IncomePage> {
                   : ListView.separated(
                       padding: const EdgeInsets.all(16),
                       itemCount: incomes.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      separatorBuilder: (_, _) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final income = incomes[index];
 
