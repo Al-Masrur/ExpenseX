@@ -7,6 +7,7 @@ import 'package:expensex/core/theme/theme_provider.dart';
 import 'package:expensex/features/budget/providers/budget_provider.dart';
 import 'package:expensex/features/expenses/providers/expense_provider.dart';
 import 'package:expensex/features/income/providers/income_provider.dart';
+import 'package:expensex/features/settings/providers/settings_provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -24,6 +25,17 @@ class _SettingsPageState extends State<SettingsPage> {
         return 'Dark';
       case ThemeMode.system:
         return 'System Default';
+    }
+  }
+
+  String _currencyLabel(String currency) {
+    switch (currency) {
+      case 'USD':
+        return 'US Dollar (\$)';
+      case 'EUR':
+        return 'Euro (€)';
+      default:
+        return 'Bangladeshi Taka (৳)';
     }
   }
 
@@ -55,19 +67,23 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
+
                 const RadioListTile<ThemeMode>(
                   title: Text('System Default'),
                   subtitle: Text('Follow your device settings'),
                   value: ThemeMode.system,
                 ),
+
                 const RadioListTile<ThemeMode>(
                   title: Text('Light'),
                   value: ThemeMode.light,
                 ),
+
                 const RadioListTile<ThemeMode>(
                   title: Text('Dark'),
                   value: ThemeMode.dark,
                 ),
+
                 const SizedBox(height: 12),
               ],
             ),
@@ -76,10 +92,55 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
 
-    if (selectedTheme == null) return;
-    if (!mounted) return;
+    if (!mounted || selectedTheme == null) return;
 
-    context.read<ThemeProvider>().setThemeMode(selectedTheme);
+    await context.read<ThemeProvider>().setThemeMode(selectedTheme);
+  }
+
+  Future<void> _selectCurrency() async {
+    final selectedCurrency = await showModalBottomSheet<String>(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Choose Currency',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+
+              ListTile(
+                title: const Text('Bangladeshi Taka (৳)'),
+                onTap: () => Navigator.pop(context, 'BDT'),
+              ),
+
+              ListTile(
+                title: const Text('US Dollar (\$)'),
+                onTap: () => Navigator.pop(context, 'USD'),
+              ),
+
+              ListTile(
+                title: const Text('Euro (€)'),
+                onTap: () => Navigator.pop(context, 'EUR'),
+              ),
+
+              const SizedBox(height: 12),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (!mounted || selectedCurrency == null) return;
+
+    await context.read<SettingsProvider>().changeCurrency(selectedCurrency);
   }
 
   Future<void> _exportData() async {
@@ -91,13 +152,6 @@ class _SettingsPageState extends State<SettingsPage> {
       final expenseProvider = context.read<ExpenseProvider>();
       final incomeProvider = context.read<IncomeProvider>();
       final budgetProvider = context.read<BudgetProvider>();
-
-      messenger.showSnackBar(
-        const SnackBar(
-          duration: Duration(seconds: 1),
-          content: Text('Exporting data...'),
-        ),
-      );
 
       final expenseFile = await exportService.exportExpenses(
         expenseProvider.expenses,
@@ -115,14 +169,10 @@ class _SettingsPageState extends State<SettingsPage> {
       await exportService.shareFile(incomeFile);
       await exportService.shareFile(budgetFile);
 
-      if (!mounted) return;
-
       messenger.showSnackBar(
         const SnackBar(content: Text('Export completed successfully.')),
       );
     } catch (e) {
-      if (!mounted) return;
-
       messenger.showSnackBar(SnackBar(content: Text('Export failed: $e')));
     }
   }
@@ -163,18 +213,14 @@ class _SettingsPageState extends State<SettingsPage> {
           const SizedBox(height: 12),
 
           Card(
-            child: ListTile(
-              leading: const Icon(Icons.currency_exchange),
-              title: const Text('Currency'),
-              subtitle: const Text('Bangladeshi Taka (৳)'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Multiple currency support will be added later.',
-                    ),
-                  ),
+            child: Consumer<SettingsProvider>(
+              builder: (context, settingsProvider, child) {
+                return ListTile(
+                  leading: const Icon(Icons.currency_exchange),
+                  title: const Text('Currency'),
+                  subtitle: Text(_currencyLabel(settingsProvider.currency)),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: _selectCurrency,
                 );
               },
             ),
@@ -201,25 +247,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   trailing: const Icon(Icons.chevron_right),
                   onTap: _exportData,
                 ),
-
                 const Divider(height: 1),
-
-                ListTile(
-                  leading: const Icon(Icons.backup_outlined),
-                  title: const Text('Backup Data'),
-                  subtitle: const Text(
-                    'Create a backup of your SQLite database',
-                  ),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Backup feature will be implemented next.',
-                        ),
-                      ),
-                    );
-                  },
+                const ListTile(
+                  leading: Icon(Icons.backup_outlined),
+                  title: Text('Backup Data'),
+                  subtitle: Text('Create a backup of your SQLite database'),
                 ),
               ],
             ),
@@ -234,9 +266,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
           const SizedBox(height: 12),
 
-          Card(
+          const Card(
             child: Column(
-              children: const [
+              children: [
                 ListTile(
                   leading: Icon(Icons.account_balance_wallet),
                   title: Text('ExpenseX'),
