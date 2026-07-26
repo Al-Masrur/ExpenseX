@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:expensex/features/dashboard/widgets/balance_card.dart';
 
 import 'package:expensex/features/budget/pages/add_budget_page.dart';
 import 'package:expensex/features/budget/providers/budget_provider.dart';
@@ -75,30 +76,10 @@ class DashboardPage extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            AppCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Current Balance', style: TextStyle(fontSize: 16)),
-
-                  const SizedBox(height: 10),
-
-                  Text(
-                    currency(balance),
-                    style: const TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  Text(
-                    '${incomeProvider.incomeCount + expenseProvider.expenseCount} Total Transactions',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
+            BalanceCard(
+              balance: currency(balance),
+              transactionCount:
+                  incomeProvider.incomeCount + expenseProvider.expenseCount,
             ),
 
             const SizedBox(height: 20),
