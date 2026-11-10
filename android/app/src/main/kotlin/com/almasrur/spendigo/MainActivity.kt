@@ -1,4 +1,4 @@
-package com.example.expensex
+package com.almasrur.spendigo
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -40,7 +40,7 @@ class ExpenseXApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp(
-            title: 'ExpenseX',
+            title: 'Spendigo',
             debugShowCheckedModeBanner: false,
 
             theme: AppTheme.lightTheme,

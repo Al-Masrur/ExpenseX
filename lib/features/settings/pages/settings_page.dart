@@ -307,7 +307,7 @@ class _SettingsPageState extends State<SettingsPage> {
               children: [
                 ListTile(
                   leading: Icon(Icons.account_balance_wallet),
-                  title: Text('ExpenseX'),
+                  title: Text('Spendigo'),
                   subtitle: Text('Personal Finance & Budget Tracker'),
                 ),
                 Divider(height: 1),

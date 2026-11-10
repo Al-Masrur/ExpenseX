@@ -1,6 +1,6 @@
-# ExpenseX
+# Spendigo
 
-A personal finance, income, and expense tracking application built with Flutter & Dart.
+A modern personal finance, income, and expense tracking application built with Flutter & Dart.
 
 ## Features
 

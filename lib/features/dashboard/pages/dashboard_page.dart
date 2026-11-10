@@ -117,7 +117,7 @@ class DashboardPage extends StatelessWidget {
             Icon(Icons.auto_graph_rounded, color: Color(0xFF4F46E5), size: 26),
             SizedBox(width: 8),
             Text(
-              'ExpenseX',
+              'Spendigo',
               style: TextStyle(fontWeight: FontWeight.w800, fontSize: 22),
             ),
           ],
