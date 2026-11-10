@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:expensex/core/utils/currency_helper.dart';
 import 'package:expensex/data/models/expense.dart';
 import 'package:expensex/features/expenses/providers/expense_provider.dart';
 
@@ -144,10 +145,10 @@ class _AddExpensePageState extends State<AddExpensePage> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Amount',
-                prefixText: '৳ ',
-                border: OutlineInputBorder(),
+                prefixText: '${context.currencySymbol} ',
+                border: const OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
