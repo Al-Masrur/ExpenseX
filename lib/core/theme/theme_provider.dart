@@ -34,15 +34,15 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setThemeMode(ThemeMode mode) async {
+  void setThemeMode(ThemeMode mode) {
     if (_themeMode == mode) return;
 
     _themeMode = mode;
-
-    final preferences = await SharedPreferences.getInstance();
-
-    await preferences.setString(_themeKey, mode.name);
-
     notifyListeners();
+
+    // Persist asynchronously in background without blocking UI
+    SharedPreferences.getInstance().then((preferences) {
+      preferences.setString(_themeKey, mode.name);
+    });
   }
 }

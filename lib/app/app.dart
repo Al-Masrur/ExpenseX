@@ -47,6 +47,8 @@ class ExpenseXApp extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
 
             themeMode: themeProvider.themeMode,
+            themeAnimationDuration: const Duration(milliseconds: 250),
+            themeAnimationCurve: Curves.easeInOutCubic,
 
             initialRoute: AppRouter.dashboard,
             onGenerateRoute: AppRouter.generateRoute,
