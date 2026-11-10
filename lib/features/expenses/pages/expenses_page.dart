@@ -162,11 +162,12 @@ class _ExpensesPageState extends State<ExpensesPage> {
         heroTag: 'expenses_fab',
         backgroundColor: const Color(0xFFF43F5E), // Vibrant Crimson
         foregroundColor: Colors.white,
-        elevation: 4,
-        icon: const Icon(Icons.add_rounded, size: 24),
+        elevation: 3,
+        extendedPadding: const EdgeInsets.symmetric(horizontal: 16),
+        icon: const Icon(Icons.add_rounded, size: 20),
         label: const Text(
           'Add Expense',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5),
         ),
         onPressed: () async {
           await Navigator.push(

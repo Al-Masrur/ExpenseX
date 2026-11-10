@@ -7,6 +7,8 @@ class CurrencyHelper {
 
   static String symbol(String currencyCode) {
     switch (currencyCode.toUpperCase()) {
+      case 'INR':
+        return '₹';
       case 'USD':
         return '\$';
       case 'EUR':

@@ -4,7 +4,6 @@ import 'package:expensex/features/budget/pages/budget_page.dart';
 import 'package:expensex/features/dashboard/pages/dashboard_page.dart';
 import 'package:expensex/features/expenses/pages/expenses_page.dart';
 import 'package:expensex/features/income/pages/income_page.dart';
-import 'package:expensex/features/settings/pages/settings_page.dart';
 import 'package:expensex/features/statistics/pages/statistics_page.dart';
 
 import 'widgets/bottom_nav_bar.dart';
@@ -25,7 +24,6 @@ class _HomeShellState extends State<HomeShell> {
     const IncomePage(),
     const StatisticsPage(),
     const BudgetPage(),
-    const SettingsPage(),
   ];
 
   void _changePage(int index) {

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:expensex/core/services/backup_service.dart';
 import 'package:expensex/core/services/export_service.dart';
 import 'package:expensex/core/theme/theme_provider.dart';
+import 'package:expensex/shared/widgets/day_night_switch.dart';
 
 import 'package:expensex/features/budget/providers/budget_provider.dart';
 import 'package:expensex/features/expenses/providers/expense_provider.dart';
@@ -19,19 +20,10 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String _themeModeLabel(ThemeMode themeMode) {
-    switch (themeMode) {
-      case ThemeMode.light:
-        return 'Light';
-      case ThemeMode.dark:
-        return 'Dark';
-      case ThemeMode.system:
-        return 'System Default';
-    }
-  }
-
   String _currencyLabel(String currency) {
     switch (currency) {
+      case 'INR':
+        return 'Indian Rupee (₹)';
       case 'USD':
         return 'US Dollar (\$)';
       case 'EUR':
@@ -41,63 +33,6 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Future<void> _selectTheme() async {
-    final themeProvider = context.read<ThemeProvider>();
-
-    final selectedTheme = await showModalBottomSheet<ThemeMode>(
-      context: context,
-      builder: (context) {
-        return SafeArea(
-          child: RadioGroup<ThemeMode>(
-            groupValue: themeProvider.themeMode,
-            onChanged: (value) {
-              Navigator.pop(context, value);
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Choose Theme',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const RadioListTile<ThemeMode>(
-                  title: Text('System Default'),
-                  subtitle: Text('Follow your device settings'),
-                  value: ThemeMode.system,
-                ),
-
-                const RadioListTile<ThemeMode>(
-                  title: Text('Light'),
-                  value: ThemeMode.light,
-                ),
-
-                const RadioListTile<ThemeMode>(
-                  title: Text('Dark'),
-                  value: ThemeMode.dark,
-                ),
-
-                const SizedBox(height: 12),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
-    if (!mounted || selectedTheme == null) return;
-
-    await context.read<ThemeProvider>().setThemeMode(selectedTheme);
-  }
 
   Future<void> _selectCurrency() async {
     final selectedCurrency = await showModalBottomSheet<String>(
@@ -120,16 +55,53 @@ class _SettingsPageState extends State<SettingsPage> {
 
               ListTile(
                 title: const Text('Bangladeshi Taka (৳)'),
+                trailing: Text(
+                  '৳',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
                 onTap: () => Navigator.pop(context, 'BDT'),
               ),
 
               ListTile(
+                title: const Text('Indian Rupee (₹)'),
+                trailing: Text(
+                  '₹',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                onTap: () => Navigator.pop(context, 'INR'),
+              ),
+
+              ListTile(
                 title: const Text('US Dollar (\$)'),
+                trailing: Text(
+                  '\$',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
                 onTap: () => Navigator.pop(context, 'USD'),
               ),
 
               ListTile(
                 title: const Text('Euro (€)'),
+                trailing: Text(
+                  '€',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
                 onTap: () => Navigator.pop(context, 'EUR'),
               ),
 
@@ -197,6 +169,8 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isSystem = themeProvider.themeMode == ThemeMode.system;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
@@ -211,12 +185,101 @@ class _SettingsPageState extends State<SettingsPage> {
           const SizedBox(height: 12),
 
           Card(
-            child: ListTile(
-              leading: const Icon(Icons.palette_outlined),
-              title: const Text('Theme'),
-              subtitle: Text(_themeModeLabel(themeProvider.themeMode)),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: _selectTheme,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                isDark
+                                    ? Icons.nightlight_round
+                                    : Icons.wb_sunny_rounded,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 22,
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    isDark ? 'Dark Theme' : 'Light Theme',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    isSystem
+                                        ? 'System Default (${isDark ? "Dark" : "Light"})'
+                                        : (isDark
+                                            ? 'Comfortable night contrast'
+                                            : 'Bright daylight clarity'),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(context).hintColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      DayNightSwitch(
+                        isDark: isDark,
+                        onToggle: (bool setDark) {
+                          themeProvider.setThemeMode(
+                            setDark ? ThemeMode.dark : ThemeMode.light,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Follow system setting',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
+                        ),
+                      ),
+                      ChoiceChip(
+                        label: const Text(
+                          'Auto System',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        selected: isSystem,
+                        onSelected: (selected) {
+                          if (selected) {
+                            themeProvider.setThemeMode(ThemeMode.system);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
 

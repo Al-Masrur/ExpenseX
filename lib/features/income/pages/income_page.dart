@@ -159,11 +159,12 @@ class _IncomePageState extends State<IncomePage> {
         heroTag: 'income_fab',
         backgroundColor: const Color(0xFF10B981), // Emerald Green
         foregroundColor: Colors.white,
-        elevation: 4,
-        icon: const Icon(Icons.add_rounded, size: 24),
+        elevation: 3,
+        extendedPadding: const EdgeInsets.symmetric(horizontal: 16),
+        icon: const Icon(Icons.add_rounded, size: 20),
         label: const Text(
           'Add Income',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5),
         ),
         onPressed: () async {
           final incomeProvider = context.read<IncomeProvider>();

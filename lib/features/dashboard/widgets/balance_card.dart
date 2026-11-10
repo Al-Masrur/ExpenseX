@@ -33,7 +33,9 @@ class BalanceCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Stack(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(28),
+        child: Stack(
         children: [
           // Subtle background decorative circles
           Positioned(
@@ -175,6 +177,7 @@ class BalanceCard extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ),
+  );
   }
 }
