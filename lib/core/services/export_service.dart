@@ -74,4 +74,13 @@ class ExportService {
       ShareParams(files: [XFile(file.path)], text: 'ExpenseX Export'),
     );
   }
+
+  Future<void> shareFiles(List<File> files) async {
+    await SharePlus.instance.share(
+      ShareParams(
+        files: files.map((f) => XFile(f.path)).toList(),
+        text: 'ExpenseX Export (Expenses, Income & Budgets)',
+      ),
+    );
+  }
 }

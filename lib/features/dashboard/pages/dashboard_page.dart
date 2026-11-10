@@ -8,21 +8,23 @@ import 'package:expensex/features/expenses/pages/add_expense_page.dart';
 import 'package:expensex/features/expenses/providers/expense_provider.dart';
 import 'package:expensex/features/income/pages/add_income_page.dart';
 import 'package:expensex/features/income/providers/income_provider.dart';
+import 'package:expensex/features/recurring/pages/recurring_page.dart';
+import 'package:expensex/features/recurring/providers/recurring_provider.dart';
 
 import 'package:expensex/shared/widgets/app_card.dart';
 import 'package:expensex/shared/widgets/app_section_title.dart';
 import 'package:expensex/shared/widgets/app_stat_card.dart';
 
 import 'package:expensex/core/services/budget_alert_service.dart';
+import 'package:expensex/core/utils/currency_helper.dart';
 import 'package:expensex/shared/widgets/budget_alert_card.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
-  String currency(double amount) => '৳ ${amount.toStringAsFixed(2)}';
-
   @override
   Widget build(BuildContext context) {
+    String currency(double amount) => context.currency(amount);
     final expenseProvider = context.watch<ExpenseProvider>();
     final incomeProvider = context.watch<IncomeProvider>();
     final budgetProvider = context.watch<BudgetProvider>();
@@ -56,6 +58,9 @@ class DashboardPage extends StatelessWidget {
           await expenseProvider.loadExpenses();
           await incomeProvider.loadIncomes();
           await budgetProvider.loadBudgets();
+          if (context.mounted) {
+            await context.read<RecurringProvider>().loadTransactions();
+          }
         },
         child: ListView(
           padding: const EdgeInsets.all(20),
@@ -174,17 +179,20 @@ class DashboardPage extends StatelessWidget {
                 ),
 
                 FilledButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Open the Statistics tab to view your analytics.',
-                        ),
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const RecurringPage(),
                       ),
                     );
+
+                    if (!context.mounted) return;
+                    await expenseProvider.loadExpenses();
+                    await incomeProvider.loadIncomes();
                   },
-                  icon: const Icon(Icons.bar_chart),
-                  label: const Text('Statistics'),
+                  icon: const Icon(Icons.repeat),
+                  label: const Text('Recurring'),
                 ),
               ],
             ),
@@ -318,6 +326,7 @@ class DashboardPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'dashboard_fab',
         onPressed: () async {
           await Navigator.push(
             context,

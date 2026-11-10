@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:expensex/core/services/backup_service.dart';
 import 'package:expensex/core/services/export_service.dart';
 import 'package:expensex/core/theme/theme_provider.dart';
 
 import 'package:expensex/features/budget/providers/budget_provider.dart';
 import 'package:expensex/features/expenses/providers/expense_provider.dart';
 import 'package:expensex/features/income/providers/income_provider.dart';
+import 'package:expensex/features/recurring/pages/recurring_page.dart';
 import 'package:expensex/features/settings/providers/settings_provider.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -165,15 +167,30 @@ class _SettingsPageState extends State<SettingsPage> {
         budgetProvider.budgets,
       );
 
-      await exportService.shareFile(expenseFile);
-      await exportService.shareFile(incomeFile);
-      await exportService.shareFile(budgetFile);
+      await exportService.shareFiles([expenseFile, incomeFile, budgetFile]);
 
       messenger.showSnackBar(
         const SnackBar(content: Text('Export completed successfully.')),
       );
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text('Export failed: $e')));
+    }
+  }
+
+  Future<void> _backupData() async {
+    final messenger = ScaffoldMessenger.of(context);
+
+    try {
+      const backupService = BackupService();
+      final backupFile = await backupService.createBackup();
+
+      await backupService.shareBackup(backupFile);
+
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Backup created and ready to share.')),
+      );
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text('Backup failed: $e')));
     }
   }
 
@@ -213,16 +230,33 @@ class _SettingsPageState extends State<SettingsPage> {
           const SizedBox(height: 12),
 
           Card(
-            child: Consumer<SettingsProvider>(
-              builder: (context, settingsProvider, child) {
-                return ListTile(
-                  leading: const Icon(Icons.currency_exchange),
-                  title: const Text('Currency'),
-                  subtitle: Text(_currencyLabel(settingsProvider.currency)),
+            child: Column(
+              children: [
+                Consumer<SettingsProvider>(
+                  builder: (context, settingsProvider, child) {
+                    return ListTile(
+                      leading: const Icon(Icons.currency_exchange),
+                      title: const Text('Currency'),
+                      subtitle: Text(_currencyLabel(settingsProvider.currency)),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: _selectCurrency,
+                    );
+                  },
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.repeat),
+                  title: const Text('Recurring & Subscriptions'),
+                  subtitle: const Text('Manage bills, subscriptions, and scheduled income'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: _selectCurrency,
-                );
-              },
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const RecurringPage()),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
 
@@ -248,10 +282,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   onTap: _exportData,
                 ),
                 const Divider(height: 1),
-                const ListTile(
-                  leading: Icon(Icons.backup_outlined),
-                  title: Text('Backup Data'),
-                  subtitle: Text('Create a backup of your SQLite database'),
+                ListTile(
+                  leading: const Icon(Icons.backup_outlined),
+                  title: const Text('Backup Data'),
+                  subtitle: const Text('Create a backup of your SQLite database'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: _backupData,
                 ),
               ],
             ),

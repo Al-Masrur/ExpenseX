@@ -28,7 +28,7 @@ class AppDatabase {
 
     return openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -49,6 +49,7 @@ class AppDatabase {
     await _createExpensesTable(db);
     await _createIncomesTable(db);
     await _createBudgetsTable(db);
+    await _createRecurringTable(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -58,6 +59,10 @@ class AppDatabase {
 
     if (oldVersion < 3) {
       await _createBudgetsTable(db);
+    }
+
+    if (oldVersion < 4) {
+      await _createRecurringTable(db);
     }
   }
 
@@ -94,6 +99,22 @@ class AppDatabase {
         month INTEGER NOT NULL,
         year INTEGER NOT NULL,
         amount REAL NOT NULL
+      )
+    ''');
+  }
+
+  Future<void> _createRecurringTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE recurring_transactions(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        amount REAL NOT NULL,
+        category TEXT NOT NULL,
+        type TEXT NOT NULL,
+        frequency TEXT NOT NULL,
+        next_date INTEGER NOT NULL,
+        note TEXT,
+        is_active INTEGER NOT NULL DEFAULT 1
       )
     ''');
   }

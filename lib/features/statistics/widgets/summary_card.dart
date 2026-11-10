@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:expensex/core/utils/currency_helper.dart';
 
 class SummaryCard extends StatelessWidget {
   const SummaryCard({
@@ -13,8 +14,6 @@ class SummaryCard extends StatelessWidget {
   final double amount;
   final IconData icon;
   final Color color;
-
-  String get formattedAmount => '৳ ${amount.toStringAsFixed(2)}';
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class SummaryCard extends StatelessWidget {
             const SizedBox(height: 8),
 
             Text(
-              formattedAmount,
+              context.currency(amount),
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ],

@@ -4,15 +4,15 @@ import 'package:provider/provider.dart';
 import 'package:expensex/features/budget/pages/add_budget_page.dart';
 import 'package:expensex/features/budget/providers/budget_provider.dart';
 import 'package:expensex/features/expenses/providers/expense_provider.dart';
+import 'package:expensex/core/utils/currency_helper.dart';
 import 'package:expensex/shared/widgets/app_card.dart';
 
 class BudgetPage extends StatelessWidget {
   const BudgetPage({super.key});
 
-  String currency(double amount) => '৳ ${amount.toStringAsFixed(2)}';
-
   @override
   Widget build(BuildContext context) {
+    String currency(double amount) => context.currency(amount);
     final budgetProvider = context.watch<BudgetProvider>();
     final expenseProvider = context.watch<ExpenseProvider>();
 
@@ -26,6 +26,7 @@ class BudgetPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Monthly Budget')),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'budget_fab',
         child: const Icon(Icons.add),
         onPressed: () async {
           await Navigator.push(

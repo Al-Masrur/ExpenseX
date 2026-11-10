@@ -45,4 +45,27 @@ class NotificationService {
       notificationDetails: details,
     );
   }
+
+  Future<void> showNotification({
+    int id = 1002,
+    required String title,
+    required String body,
+  }) async {
+    const androidDetails = AndroidNotificationDetails(
+      'recurring_transactions',
+      'Recurring Transactions',
+      channelDescription: 'Notifications for recurring bills and income.',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    const details = NotificationDetails(android: androidDetails);
+
+    await _notifications.show(
+      id: id,
+      title: title,
+      body: body,
+      notificationDetails: details,
+    );
+  }
 }

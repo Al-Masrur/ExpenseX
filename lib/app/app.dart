@@ -7,6 +7,7 @@ import 'package:expensex/core/theme/app_theme.dart';
 import 'package:expensex/features/expenses/providers/expense_provider.dart';
 import 'package:expensex/features/income/providers/income_provider.dart';
 import 'package:expensex/features/budget/providers/budget_provider.dart';
+import 'package:expensex/features/recurring/providers/recurring_provider.dart';
 
 class ExpenseXApp extends StatelessWidget {
   const ExpenseXApp({super.key});
@@ -24,6 +25,12 @@ class ExpenseXApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => IncomeProvider()..loadIncomes()),
 
         ChangeNotifierProvider(create: (_) => BudgetProvider()..loadBudgets()),
+
+        ChangeNotifierProvider(
+          create: (_) => RecurringProvider()
+            ..loadTransactions()
+            ..processDueTransactions(),
+        ),
 
         ChangeNotifierProvider(
           create: (_) => SettingsProvider()..loadSettings(),

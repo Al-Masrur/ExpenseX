@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:expensex/core/utils/currency_helper.dart';
 
 class TopCategoryCard extends StatelessWidget {
   const TopCategoryCard({
@@ -9,8 +10,6 @@ class TopCategoryCard extends StatelessWidget {
 
   final String category;
   final double amount;
-
-  String currency(double value) => '৳ ${value.toStringAsFixed(2)}';
 
   IconData getCategoryIcon() {
     switch (category.toLowerCase()) {
@@ -78,7 +77,7 @@ class TopCategoryCard extends StatelessWidget {
                   const SizedBox(height: 6),
 
                   Text(
-                    currency(amount),
+                    context.currency(amount),
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ],
