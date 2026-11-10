@@ -75,18 +75,15 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
   List<Expense> _filteredExpenses(List<Expense> expenses) {
     return expenses.where((expense) {
-      // Category filter
       if (_selectedCategory != 'All' &&
           expense.category.toLowerCase() != _selectedCategory.toLowerCase()) {
         return false;
       }
 
-      // Date filter
       if (!_matchesDate(expense.date, _dateFilter)) {
         return false;
       }
 
-      // Search text
       if (_searchText.trim().isNotEmpty) {
         final query = _searchText.toLowerCase();
         final matches =
@@ -103,23 +100,23 @@ class _ExpensesPageState extends State<ExpensesPage> {
   IconData categoryIcon(String category) {
     switch (category.toLowerCase()) {
       case 'food':
-        return Icons.restaurant;
+        return Icons.restaurant_rounded;
       case 'transport':
-        return Icons.directions_car;
+        return Icons.directions_car_rounded;
       case 'shopping':
-        return Icons.shopping_bag;
+        return Icons.shopping_bag_rounded;
       case 'health':
-        return Icons.local_hospital;
+        return Icons.local_hospital_rounded;
       case 'education':
-        return Icons.school;
+        return Icons.school_rounded;
       case 'travel':
-        return Icons.flight;
+        return Icons.flight_rounded;
       case 'bills':
-        return Icons.receipt_long;
+        return Icons.receipt_long_rounded;
       case 'entertainment':
-        return Icons.movie;
+        return Icons.movie_rounded;
       default:
-        return Icons.payments;
+        return Icons.payments_rounded;
     }
   }
 
@@ -154,35 +151,46 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Expenses'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: 'Add Expense',
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AddExpensePage()),
-              );
-              if (!mounted) return;
-              await provider.loadExpenses();
-            },
-          ),
-        ],
+        title: const Text(
+          'Expenses',
+          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 22),
+        ),
+      ),
+      // Right-thumb reachable Add Button
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'expenses_fab',
+        backgroundColor: const Color(0xFFF43F5E), // Vibrant Crimson
+        foregroundColor: Colors.white,
+        elevation: 4,
+        icon: const Icon(Icons.add_rounded, size: 24),
+        label: const Text(
+          'Add Expense',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddExpensePage()),
+          );
+          if (!mounted) return;
+          await provider.loadExpenses();
+        },
       ),
       body: Column(
         children: [
+          // Search Field
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search expenses...',
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search_rounded),
                 suffixIcon: _searchText.isEmpty
                     ? null
                     : IconButton(
-                        icon: const Icon(Icons.clear),
+                        icon: const Icon(Icons.clear_rounded),
                         onPressed: () {
                           _searchController.clear();
                           setState(() {
@@ -190,9 +198,6 @@ class _ExpensesPageState extends State<ExpensesPage> {
                           });
                         },
                       ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               ),
               onChanged: (value) {
@@ -205,7 +210,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
           // Date Filter Pills
           SizedBox(
-            height: 40,
+            height: 38,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               scrollDirection: Axis.horizontal,
@@ -217,6 +222,10 @@ class _ExpensesPageState extends State<ExpensesPage> {
                 return ChoiceChip(
                   label: Text(_dateFilterLabel(filter)),
                   selected: isSelected,
+                  labelStyle: TextStyle(
+                    fontSize: 12,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  ),
                   onSelected: (selected) {
                     if (selected) {
                       setState(() {
@@ -233,7 +242,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
           // Category Chips
           SizedBox(
-            height: 38,
+            height: 36,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               scrollDirection: Axis.horizontal,
@@ -257,19 +266,31 @@ class _ExpensesPageState extends State<ExpensesPage> {
 
           // Summary Bar
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            padding: const EdgeInsets.fromLTRB(18, 12, 18, 6),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '${expenses.length} expense${expenses.length == 1 ? '' : 's'}',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Theme.of(context).hintColor,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-                Text(
-                  'Total: ${context.currency(totalFiltered)}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF43F5E).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    'Total: -${context.currency(totalFiltered)}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: Color(0xFFF43F5E),
+                    ),
                   ),
                 ),
               ],
@@ -283,31 +304,40 @@ class _ExpensesPageState extends State<ExpensesPage> {
               onRefresh: provider.loadExpenses,
               child: expenses.isEmpty
                   ? ListView(
-                      children: const [
-                        SizedBox(height: 100),
-                        Icon(Icons.receipt_long, size: 70, color: Colors.grey),
-                        SizedBox(height: 16),
-                        Center(
+                      children: [
+                        const SizedBox(height: 90),
+                        Icon(
+                          Icons.receipt_long_outlined,
+                          size: 64,
+                          color: Theme.of(context).hintColor.withValues(alpha: 0.4),
+                        ),
+                        const SizedBox(height: 16),
+                        const Center(
                           child: Text(
                             'No Expenses Found',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 6),
                         Center(
                           child: Text(
-                            'Try adjusting your filters or add a new expense.',
+                            'Try adjusting your filters or tap "Add Expense" below.',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Theme.of(context).hintColor,
+                            ),
                           ),
                         ),
                       ],
                     )
                   : ListView.separated(
-                      padding: const EdgeInsets.all(16),
+                      // Padding at bottom ensures FAB never overlaps content
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
                       itemCount: expenses.length,
-                      separatorBuilder: (_, _) => const SizedBox(height: 12),
+                      separatorBuilder: (_, _) => const SizedBox(height: 10),
                       itemBuilder: (context, index) {
                         final expense = expenses[index];
 
@@ -318,11 +348,11 @@ class _ExpensesPageState extends State<ExpensesPage> {
                             alignment: Alignment.centerRight,
                             padding: const EdgeInsets.only(right: 20),
                             decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(24),
+                              color: const Color(0xFFF43F5E),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Icon(
-                              Icons.delete,
+                              Icons.delete_rounded,
                               color: Colors.white,
                             ),
                           ),
@@ -332,7 +362,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                             }
                           },
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(24),
+                            borderRadius: BorderRadius.circular(20),
                             onTap: () async {
                               final provider = context.read<ExpenseProvider>();
 
@@ -349,32 +379,58 @@ class _ExpensesPageState extends State<ExpensesPage> {
                               await provider.loadExpenses();
                             },
                             child: AppCard(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
                               child: ListTile(
                                 contentPadding: EdgeInsets.zero,
-                                leading: CircleAvatar(
-                                  child: Icon(categoryIcon(expense.category)),
+                                leading: Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF43F5E)
+                                        .withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Icon(
+                                    categoryIcon(expense.category),
+                                    color: const Color(0xFFF43F5E),
+                                    size: 22,
+                                  ),
                                 ),
-                                title: Text(expense.title),
+                                title: Text(
+                                  expense.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 subtitle: Text(
                                   '${expense.category}${expense.note != null && expense.note!.isNotEmpty ? ' • ${expense.note}' : ''}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context).hintColor,
+                                  ),
                                 ),
                                 trailing: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      context.currency(expense.amount),
+                                      '-${context.currency(expense.amount)}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
-                                        color: Colors.red,
+                                        color: Color(0xFFF43F5E),
                                       ),
                                     ),
+                                    const SizedBox(height: 2),
                                     Text(
                                       '${expense.date.day}/${expense.date.month}/${expense.date.year}',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall,
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Theme.of(context).hintColor,
+                                      ),
                                     ),
                                   ],
                                 ),

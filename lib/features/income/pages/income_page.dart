@@ -99,21 +99,21 @@ class _IncomePageState extends State<IncomePage> {
   IconData categoryIcon(String category) {
     switch (category.toLowerCase()) {
       case 'salary':
-        return Icons.account_balance_wallet;
+        return Icons.account_balance_wallet_rounded;
       case 'freelance':
-        return Icons.laptop;
+        return Icons.laptop_chromebook_rounded;
       case 'business':
-        return Icons.business;
+        return Icons.storefront_rounded;
       case 'investment':
-        return Icons.trending_up;
+        return Icons.trending_up_rounded;
       case 'gift':
-        return Icons.card_giftcard;
+        return Icons.card_giftcard_rounded;
       case 'bonus':
-        return Icons.workspace_premium;
+        return Icons.workspace_premium_rounded;
       case 'rental':
-        return Icons.home_work;
+        return Icons.apartment_rounded;
       default:
-        return Icons.attach_money;
+        return Icons.attach_money_rounded;
     }
   }
 
@@ -148,39 +148,50 @@ class _IncomePageState extends State<IncomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Income'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: 'Add Income',
-            onPressed: () async {
-              final incomeProvider = context.read<IncomeProvider>();
+        title: const Text(
+          'Income',
+          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 22),
+        ),
+      ),
+      // Right-thumb reachable Add Button
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'income_fab',
+        backgroundColor: const Color(0xFF10B981), // Emerald Green
+        foregroundColor: Colors.white,
+        elevation: 4,
+        icon: const Icon(Icons.add_rounded, size: 24),
+        label: const Text(
+          'Add Income',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+        onPressed: () async {
+          final incomeProvider = context.read<IncomeProvider>();
 
-              await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AddIncomePage()),
-              );
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddIncomePage()),
+          );
 
-              if (!mounted) return;
+          if (!mounted) return;
 
-              await incomeProvider.loadIncomes();
-            },
-          ),
-        ],
+          await incomeProvider.loadIncomes();
+        },
       ),
       body: Column(
         children: [
+          // Search Field
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search income...',
-                prefixIcon: const Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search_rounded),
                 suffixIcon: _searchText.isEmpty
                     ? null
                     : IconButton(
-                        icon: const Icon(Icons.clear),
+                        icon: const Icon(Icons.clear_rounded),
                         onPressed: () {
                           _searchController.clear();
                           setState(() {
@@ -188,9 +199,6 @@ class _IncomePageState extends State<IncomePage> {
                           });
                         },
                       ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               ),
               onChanged: (value) {
@@ -203,7 +211,7 @@ class _IncomePageState extends State<IncomePage> {
 
           // Date Filter Pills
           SizedBox(
-            height: 40,
+            height: 38,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               scrollDirection: Axis.horizontal,
@@ -215,6 +223,10 @@ class _IncomePageState extends State<IncomePage> {
                 return ChoiceChip(
                   label: Text(_dateFilterLabel(filter)),
                   selected: isSelected,
+                  labelStyle: TextStyle(
+                    fontSize: 12,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                  ),
                   onSelected: (selected) {
                     if (selected) {
                       setState(() {
@@ -231,7 +243,7 @@ class _IncomePageState extends State<IncomePage> {
 
           // Category Chips
           SizedBox(
-            height: 38,
+            height: 36,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               scrollDirection: Axis.horizontal,
@@ -255,19 +267,31 @@ class _IncomePageState extends State<IncomePage> {
 
           // Summary Bar
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            padding: const EdgeInsets.fromLTRB(18, 12, 18, 6),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '${incomes.length} income item${incomes.length == 1 ? '' : 's'}',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Theme.of(context).hintColor,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-                Text(
-                  'Total: ${context.currency(totalFiltered)}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF10B981).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    'Total: +${context.currency(totalFiltered)}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: Color(0xFF10B981),
+                    ),
                   ),
                 ),
               ],
@@ -281,35 +305,39 @@ class _IncomePageState extends State<IncomePage> {
               onRefresh: provider.loadIncomes,
               child: incomes.isEmpty
                   ? ListView(
-                      children: const [
-                        SizedBox(height: 100),
+                      children: [
+                        const SizedBox(height: 90),
                         Icon(
                           Icons.account_balance_wallet_outlined,
-                          size: 70,
-                          color: Colors.grey,
+                          size: 64,
+                          color: Theme.of(context).hintColor.withValues(alpha: 0.4),
                         ),
-                        SizedBox(height: 16),
-                        Center(
+                        const SizedBox(height: 16),
+                        const Center(
                           child: Text(
                             'No Income Found',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 6),
                         Center(
                           child: Text(
-                            'Try adjusting your filters or record a new income.',
+                            'Try adjusting your filters or tap "Add Income" below.',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Theme.of(context).hintColor,
+                            ),
                           ),
                         ),
                       ],
                     )
                   : ListView.separated(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
                       itemCount: incomes.length,
-                      separatorBuilder: (_, _) => const SizedBox(height: 12),
+                      separatorBuilder: (_, _) => const SizedBox(height: 10),
                       itemBuilder: (context, index) {
                         final income = incomes[index];
 
@@ -321,10 +349,10 @@ class _IncomePageState extends State<IncomePage> {
                             padding: const EdgeInsets.only(right: 20),
                             decoration: BoxDecoration(
                               color: Colors.red,
-                              borderRadius: BorderRadius.circular(24),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Icon(
-                              Icons.delete,
+                              Icons.delete_rounded,
                               color: Colors.white,
                             ),
                           ),
@@ -334,7 +362,7 @@ class _IncomePageState extends State<IncomePage> {
                             }
                           },
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(24),
+                            borderRadius: BorderRadius.circular(20),
                             onTap: () async {
                               final provider = context.read<IncomeProvider>();
 
@@ -350,32 +378,58 @@ class _IncomePageState extends State<IncomePage> {
                               await provider.loadIncomes();
                             },
                             child: AppCard(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
                               child: ListTile(
                                 contentPadding: EdgeInsets.zero,
-                                leading: CircleAvatar(
-                                  child: Icon(categoryIcon(income.category)),
+                                leading: Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF10B981)
+                                        .withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Icon(
+                                    categoryIcon(income.category),
+                                    color: const Color(0xFF10B981),
+                                    size: 22,
+                                  ),
                                 ),
-                                title: Text(income.title),
+                                title: Text(
+                                  income.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 subtitle: Text(
                                   '${income.category}${income.note != null && income.note!.isNotEmpty ? ' • ${income.note}' : ''}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Theme.of(context).hintColor,
+                                  ),
                                 ),
                                 trailing: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      context.currency(income.amount),
+                                      '+${context.currency(income.amount)}',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
-                                        color: Colors.green,
+                                        color: Color(0xFF10B981),
                                       ),
                                     ),
+                                    const SizedBox(height: 2),
                                     Text(
                                       '${income.date.day}/${income.date.month}/${income.date.year}',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall,
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Theme.of(context).hintColor,
+                                      ),
                                     ),
                                   ],
                                 ),
