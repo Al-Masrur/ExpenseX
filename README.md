@@ -10,7 +10,8 @@ This is my first vibe coded android app.
 - **Budgeting**: Set monthly spending caps with threshold warnings and notifications.
 - **Analytics & Visualizations**: Category breakdowns with interactive pie charts and monthly financial trends.
 - **Data Backup & Export**: Export transaction history to CSV format and backup/restore local SQLite database.
-- **Theming & Multi-Currency**: Support for Light, Dark, and System theme modes, along with multiple currencies (BDT, USD, EUR).
+- **Theming & Multi-Currency**: Support for Light, Dark, and System theme modes, along with multiple currencies (BDT, USD, EUR, INR).
+
 
 ## Tech Stack & Architecture
 
