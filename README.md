@@ -1,6 +1,7 @@
 # Spendigo
 
-A modern personal finance, income, and expense tracking application built with Flutter & Dart.
+A modern personal finance, income, and expense tracking app built with Flutter & Dart.
+This is my first vibe coded android app. 
 
 ## Features
 
